@@ -13,7 +13,7 @@ case "${1:-}" in
   start)
     tmux has-session -t "$TMUX_SESION" 2>/dev/null || tmux new-session -d -s "$TMUX_SESION" -n S1
     for s in S2 S3; do tmux list-windows -t "$TMUX_SESION" -F '#W' | grep -qx $s || tmux new-window -d -t "$TMUX_SESION" -n $s; done
-    for s in S1 S2 S3; do lanzar $s; done; sleep 2; "$0" status ;;
+    for s in S1 S2 S3; do lanzar $s; done; sleep 2; bash "$0" status ;;
   stop)    if [[ -n "${2:-}" ]]; then detener "$2"; else for s in S1 S2 S3; do detener $s; done; fi ;;
   restart) detener "$2"; sleep 1; lanzar "$2" ;;
   status)
