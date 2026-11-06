@@ -6,12 +6,12 @@ Cache-Control: no-cache. Identifica la réplica por el header X-Servidor-Flask.
 Guarda: evidencias/<ensayo>_<fecha>.csv (detalle) y .txt (resumen).
 
 Uso:
-  python3 scripts/ensayos.py --ip 10.0.2.4 rr            # 30 GET
-  python3 scripts/ensayos.py --ip 10.0.2.4 ponderado     # 50 GET (ref. 60/20/20)
-  python3 scripts/ensayos.py --ip 10.0.2.4 fallo         # 30 GET con S2 detenido
-  python3 scripts/ensayos.py --ip 10.0.2.4 recuperacion  # sondea hasta ver S2 de nuevo
-  python3 scripts/ensayos.py --ip 10.0.2.4 ligera        # 20 GET secuenciales
-  python3 scripts/ensayos.py --ip 10.0.2.4 pesada        # 300 GET, 20 hilos
+  python3 scripts/ensayos.py rr            # 30 GET
+  python3 scripts/ensayos.py ponderado     # 50 GET (ref. 60/20/20)
+  python3 scripts/ensayos.py fallo         # 30 GET con S2 detenido
+  python3 scripts/ensayos.py recuperacion  # sondea hasta ver S2 de nuevo
+  python3 scripts/ensayos.py ligera        # 20 GET secuenciales
+  python3 scripts/ensayos.py pesada        # 300 GET, 20 hilos
   Opcionales: -n N  -c HILOS  --puerto 8080  --ruta /api/estado
 """
 import argparse, csv, ipaddress, json, os, statistics, sys, time, urllib.error, urllib.request
@@ -74,7 +74,7 @@ def guardar(nombre, filas, texto):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("ensayo", choices=list(PRESETS) + ["recuperacion"])
-    ap.add_argument("--ip", required=True); ap.add_argument("--puerto", type=int, default=8080)
+    ap.add_argument("--ip", default="10.0.2.4"); ap.add_argument("--puerto", type=int, default=8080)
     ap.add_argument("--ruta", default="/api/estado"); ap.add_argument("-n", type=int); ap.add_argument("-c", type=int)
     a = ap.parse_args()
     if not ipaddress.ip_address(a.ip).is_private:

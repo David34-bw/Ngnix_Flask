@@ -64,16 +64,16 @@ Los logs de cada instancia quedan en `logs/S1.log` (y equivalentes).
 ## Fase C — NGINX
 
 vm2: `bash scripts/evidencias_vm2.sh faseC` guarda las IPs, `ss -ltnp`, `nginx -t`, la configuración y los logs en `evidencias/`.
-vm1: abre Firefox en `http://10.0.2.4:8080/` y recorre `/calculadora`, `/pruebas` y `/monitor`. **Evidencia C:** captura del portal.
+vm1: `bash scripts/probar_vm1.sh` (portal y API por curl, guarda en `evidencias/`). Con interfaz: Firefox en `http://10.0.2.4:8080/`. **Evidencia C:** captura.
 
 ## Sesión 2 — Ensayos (cliente en vm1, control en vm2)
 
 | # | vm2 (antes) | vm1 |
 |---|---|---|
-| 1 Round robin | `bash scripts/pesos.sh rr` | `python3 scripts/ensayos.py --ip 10.0.2.4 rr` |
-| 2 Pesos 3:1:1 | `bash scripts/pesos.sh ponderado` | `python3 scripts/ensayos.py --ip 10.0.2.4 ponderado` |
-| 3 Fallo | `bash scripts/pesos.sh rr` y `bash scripts/instancias.sh stop S2` | `python3 scripts/ensayos.py --ip 10.0.2.4 fallo` |
-| 4 Recuperación | (primero arranca el comando de vm1) `bash scripts/instancias.sh restart S2` | `python3 scripts/ensayos.py --ip 10.0.2.4 recuperacion` |
+| 1 Round robin | `bash scripts/pesos.sh rr` | `python3 scripts/ensayos.py rr` |
+| 2 Pesos 3:1:1 | `bash scripts/pesos.sh ponderado` | `python3 scripts/ensayos.py ponderado` |
+| 3 Fallo | `bash scripts/pesos.sh rr` y `bash scripts/instancias.sh stop S2` | `python3 scripts/ensayos.py fallo` |
+| 4 Recuperación | (primero arranca el comando de vm1) `bash scripts/instancias.sh restart S2` | `python3 scripts/ensayos.py recuperacion` |
 | 5 Latencia | — | `... ligera` y `... pesada` |
 | 6 Logs | `bash scripts/evidencias_vm2.sh final` | — |
 
