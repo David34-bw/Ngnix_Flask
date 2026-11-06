@@ -27,6 +27,10 @@ else
   echo "Agregado include (copia original en $NGINX_CONF.orig)"
 fi
 grep -n 'conf.d' "$NGINX_CONF"
+# En Arch el error log compilado es stderr (journal): se fija un archivo para la evidencia
+grep -q '^error_log' "$NGINX_CONF" || sudo sed -i '1i error_log /var/log/nginx/error.log;' "$NGINX_CONF"
+# Evita el aviso "could not build optimal types_hash"
+grep -q 'types_hash_max_size' "$NGINX_CONF" || sudo sed -i '0,/^\s*http\s*{/s//&\n    types_hash_max_size 4096;/' "$NGINX_CONF"
 
 echo "== 4. Copiar laboratorio.conf =="
 sudo cp "$CONF_ORIGEN" "$CONF_DESTINO"

@@ -28,6 +28,7 @@ bash scripts/instalar_vm2.sh
 ```
 Instala nginx, curl, tmux y Python; crea `venv/` con Flask; agrega `include /etc/nginx/conf.d/*.conf;` dentro de `http {}` si falta (guarda una copia en `nginx.conf.orig`); copia `laboratorio.conf`; ejecuta `nginx -t` y `systemctl enable --now nginx`.
 Al final deberías ver `syntax is ok`, `test is successful`, `active` y las rutas de los logs.
+Luego: `bash scripts/ajustes_nginx.sh` (crea `/var/log/nginx/error.log` y quita el aviso `types_hash`).
 
 **vm1:**
 ```bash
