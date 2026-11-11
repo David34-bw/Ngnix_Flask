@@ -1,5 +1,7 @@
 # Guía rápida — Laboratorio NGINX + Flask en Arch Linux
 
+> Todos los comandos se ejecutan dentro de `~/Ngnix_Flask/segunda_entrega`. El `venv/` creado antes en `~/Ngnix_Flask/venv` ya no sirve aquí: si se repite esta entrega, ejecutar de nuevo `bash scripts/instalar_vm2.sh`.
+
 > vm1 = cliente (10.0.2.3) · vm2 = servidor (10.0.2.4). **Verifica siempre las IPs con `ip -br addr`**, porque pueden cambiar.
 > Copia los archivos del docente (`app.py`, `laboratorio.conf`, `cliente_pruebas.py`, `requirements.txt`) en la raíz del repo antes de clonar.
 
@@ -16,7 +18,7 @@ sudo localectl set-keymap es
 sudo pacman -Syu --needed git
 ```
 ```bash
-git clone https://github.com/David34-bw/Ngnix_Flask.git && cd Ngnix_Flask
+git clone https://github.com/David34-bw/Ngnix_Flask.git && cd Ngnix_Flask/segunda_entrega
 ```
 Si `pacman -Syu` actualiza el kernel, reinicia (`sudo reboot`) antes de seguir.
 
@@ -86,11 +88,11 @@ vm1: `bash scripts/probar_vm1.sh` (portal y API por curl, guarda en `evidencias/
 
 Los ensayos ya quedan en `evidencias/` de vm1. Para traer los de vm2 por HTTP temporal en la red privada, primero en **vm2**:
 ```bash
-cd ~/Ngnix_Flask/evidencias && python3 -m http.server 8000 --bind 10.0.2.4
+cd ~/Ngnix_Flask/segunda_entrega/evidencias && python3 -m http.server 8000 --bind 10.0.2.4
 ```
 Luego en **vm1** (después, detén el servidor de vm2 con `Ctrl+c`):
 ```bash
-cd ~/Ngnix_Flask/evidencias && wget -r -np -nH -nd -A txt,csv http://10.0.2.4:8000/
+cd ~/Ngnix_Flask/segunda_entrega/evidencias && wget -r -np -nH -nd -A txt,csv http://10.0.2.4:8000/
 ```
 (Si `wget` no está, instálalo con `sudo pacman -Syu wget`.) Después, desde Firefox en vm1, súbelos adonde decidas, o copia el texto con el portapapeles compartido.
 

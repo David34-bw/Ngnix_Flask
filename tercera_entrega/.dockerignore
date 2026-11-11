@@ -1,0 +1,4 @@
+# Solo app.py y requirements.txt forman parte de la imagen
+*
+!app.py
+!requirements.txt

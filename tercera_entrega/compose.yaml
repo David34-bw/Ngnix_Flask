@@ -1,0 +1,60 @@
+# Infraestructura de la entrega 3: 3 instancias Flask + 1 Nginx en una red privada.
+# Despliegue completo:  docker compose up -d --build
+# Solo Nginx publica un puerto en el anfitrión (8080 -> 80). Los Flask no publican puertos.
+name: lab_docker
+
+# Bloque común a las tres instancias Flask (ancla YAML, se reutiliza con <<: *flask)
+x-flask: &flask
+  build: .                      # construye la imagen desde el Dockerfile de esta carpeta
+  image: lab-flask:1.0          # las tres instancias usan esta misma imagen
+  expose:
+    - "5000"                    # puerto interno, accesible solo dentro de red_lab
+  networks:
+    - red_lab
+  restart: unless-stopped       # reinicia si el proceso termina solo; no si se detiene a mano
+  healthcheck:                  # estado de la APLICACIÓN, no solo del contenedor
+    test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:5000/health', timeout=2).status == 200 else 1)"]
+    interval: 10s
+    timeout: 3s
+    retries: 3
+    start_period: 5s
+
+services:
+  flask1:
+    <<: *flask
+    container_name: flask1
+    environment:
+      SERVER_ID: flask1         # mismo código, distinto identificador
+
+  flask2:
+    <<: *flask
+    container_name: flask2
+    environment:
+      SERVER_ID: flask2
+
+  flask3:
+    <<: *flask
+    container_name: flask3
+    environment:
+      SERVER_ID: flask3
+
+  nginx:
+    image: nginx:1.28-alpine    # imagen oficial; >= 1.27.3 admite "resolve" en upstream
+    container_name: nginx
+    ports:
+      - "8080:80"               # único acceso externo: anfitrión:8080 -> contenedor:80
+    volumes:
+      # Montaje de solo lectura: se cambia la configuración sin reconstruir la imagen
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - flask1
+      - flask2
+      - flask3
+    networks:
+      - red_lab
+    restart: unless-stopped
+
+networks:
+  red_lab:
+    name: red_lab               # nombre fijo (sin prefijo del proyecto)
+    driver: bridge              # red privada con DNS interno por nombre de servicio
